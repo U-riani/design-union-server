@@ -6,6 +6,8 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 
+const connectDB = require("../lib/db");
+
 // Import route handlers
 const adminRoutes = require("../routes/adminRoutes"); // Admin routes
 const newsRoutes = require("../routes/newsRoutes"); // News routes
@@ -20,6 +22,8 @@ const projectsRoutes = require("../routes/projectsRoutes");
 const projectsDescriptionRoutes = require("../routes/projectsDescriptionRoutes");
 const projectsContentRoutes = require("../routes/projectsContentRotes");
 const teamRoutes = require("../routes/teamRoutes");
+
+connectDB();
 
 // Initialize Express app
 const app = express();
@@ -82,11 +86,11 @@ app.use("/uploads", express.static("uploads"));
 app.set("trust proxy", 1); // Trust the first proxy
 
 // MongoDB Atlas connection
-const mongoURI = process.env.MONGO_URI;
-mongoose
-  .connect(mongoURI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log("Error connecting to MongoDB:", err));
+// const mongoURI = process.env.MONGO_URI;
+// mongoose
+//   .connect(mongoURI)
+//   .then(() => console.log("MongoDB connected"))
+//   .catch((err) => console.log("Error connecting to MongoDB:", err));
 
 // Routes
 app.use("/admin", adminRoutes); // Admin routes
