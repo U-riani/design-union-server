@@ -23,8 +23,16 @@ const projectsDescriptionRoutes = require("../routes/projectsDescriptionRoutes")
 const projectsContentRoutes = require("../routes/projectsContentRotes");
 const teamRoutes = require("../routes/teamRoutes");
 
-connectDB().catch(console.error);
- 
+connectDB()
+  .then(() => {
+    console.log("MongoDB connected");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection failed:", err);
+    process.exit(1); // important on Render
+  });
+
+
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -46,7 +54,16 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (e.g., mobile apps or Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: "GET,POST,PATCH,DELETE",
     credentials: true,
   })
 );
@@ -114,9 +131,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 // Export app for deployment
 module.exports = app;
