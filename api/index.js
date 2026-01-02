@@ -23,7 +23,7 @@ const projectsDescriptionRoutes = require("../routes/projectsDescriptionRoutes")
 const projectsContentRoutes = require("../routes/projectsContentRotes");
 const teamRoutes = require("../routes/teamRoutes");
 
-connectDB();
+await connectDB();
 
 // Initialize Express app
 const app = express();
