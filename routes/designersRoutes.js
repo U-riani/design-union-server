@@ -4,8 +4,11 @@ const { handleImageUpload } = require('../middleware/imageMiddleware');
 const rateLimitMiddleware = require('../middleware/rateLimitMiddleware');
 
 
+const dbMiddleware = require("../middleware/dbMiddleware");
+
 const router = express.Router();
 
+router.use(dbMiddleware);
 router.get('/', getAllDesigners);
 
 router.get('/allDesignersInfo', getAllDesignersInfo);

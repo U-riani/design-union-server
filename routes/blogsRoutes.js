@@ -11,7 +11,11 @@ const {
 const { validateBlogsData } = require('../middleware/blogsMiddleware');
 const { handleImageUpload } = require('../middleware/imageMiddleware');
 
+const dbMiddleware = require("../middleware/dbMiddleware");
+
 const router = express.Router();
+
+router.use(dbMiddleware);
 
 // Route to save blogs
 router.post('/blogs', handleImageUpload, validateBlogsData, saveBlog);

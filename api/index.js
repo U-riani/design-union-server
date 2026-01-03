@@ -24,9 +24,7 @@ const projectsContentRoutes = require("../routes/projectsContentRotes");
 const teamRoutes = require("../routes/teamRoutes");
 
 connectDB()
-  .then(() => {
-    console.log("MongoDB connected");
-  })
+  .then(() => {})
   .catch((err) => {
     console.error("MongoDB connection failed:", err);
     process.exit(1); // important on Render
@@ -44,7 +42,6 @@ const allowedOrigins = [
   "https://design-lab.ge",
   "https://ohmenergy.ge",
   "https://zpm.znt.temporary.site",
-  "https://designersunion.ge",
   "http://designersunion.ge",
   "http://www.designersunion.ge",
   "https://www.designersunion.ge",
@@ -140,9 +137,9 @@ app.listen(PORT, () => {
 // Export app for deployment
 module.exports = app;
 
-// Graceful shutdown (optional, mainly for local use)
-process.on("SIGTERM", async () => {
-  console.log("Server terminating");
-  await mongoose.connection.close();
-  process.exit(0);
-});
+// // Graceful shutdown (optional, mainly for local use)
+// process.on("SIGTERM", async () => {
+//   console.log("Server terminating");
+//   await mongoose.connection.close();
+//   process.exit(0);
+// });

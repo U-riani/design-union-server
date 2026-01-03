@@ -8,8 +8,11 @@ const {
 } = require("../controllers/teamController");
 const { handleImageUpload } = require("../middleware/imageMiddleware");
 
+const dbMiddleware = require("../middleware/dbMiddleware");
+
 const router = express.Router();
 
+router.use(dbMiddleware);
 router.get("/", getTeamMembers);
 router.post("/", handleImageUpload, createTeamMember);
 router.patch("/:id", handleImageUpload, updateTeamMember);

@@ -3,8 +3,11 @@ const {deleteProjectDescription, updateProjectDescription, updateProjectHeroData
 const { handleProjectsHeroImagesUpload } = require("../middleware/projectsImageMiddleware");
 const { handleImageUpload } = require('../middleware/imageMiddleware');
 
+const dbMiddleware = require("../middleware/dbMiddleware");
+
 const router = express.Router();
 
+router.use(dbMiddleware);
 
 router.delete("/:id", deleteProjectDescription);
  

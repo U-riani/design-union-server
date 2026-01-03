@@ -16,8 +16,11 @@ const { handleImageUpload } = require('../middleware/imageMiddleware');
 //   deleteFromFirebase,
 // } = require("../middleware/projectsImageMiddleware");
 
+const dbMiddleware = require("../middleware/dbMiddleware");
+
 const router = express.Router();
 
+router.use(dbMiddleware);
 router.get("/", getAllProjects);
 
 router.get("/lastThreeProjects", getLastThreeProjects);

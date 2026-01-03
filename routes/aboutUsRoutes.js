@@ -9,8 +9,11 @@ const {
   updateAboutUsMainPage,
 } = require("../controllers/aboutUsController");
 const { handleImageUpload } = require("../middleware/imageMiddleware");
+const dbMiddleware = require("../middleware/dbMiddleware");
 
 const router = express.Router();
+
+router.use(dbMiddleware);
 
 router.get("/", getAboutUs);
 

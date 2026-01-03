@@ -13,8 +13,11 @@ const {
 const { handleImageUpload } = require("../middleware/imageMiddleware");
 const thumbnailUrlMiddleware = require("../middleware/thumbnailMiddleware");
 
+const dbMiddleware = require("../middleware/dbMiddleware");
+
 const router = express.Router();
 
+router.use(dbMiddleware);
 router.post("/projectContentTitle/:id", createProjectContentTitle);
 
 router.patch("/projectContentTitle/:id", updateProjectContentTitle);
