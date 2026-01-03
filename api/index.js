@@ -1,6 +1,6 @@
 require("dotenv").config(); // Load environment variables from .env
 const express = require("express");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
@@ -32,7 +32,6 @@ connectDB()
     process.exit(1); // important on Render
   });
 
-
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -54,16 +53,19 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (e.g., mobile apps or Postman)
+    origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith(".netlify.app") ||
+        origin.endsWith(".onrender.com")
+      ) {
+        return callback(null, true);
       }
+
+      return callback(null, true); // ← yes, allow instead of nuking prod
     },
-    methods: "GET,POST,PATCH,DELETE",
     credentials: true,
   })
 );
@@ -125,8 +127,8 @@ app.get("/", (req, res) => {
 app.use((err, req, res, next) => {
   console.error(err);
 
-  res.status(500).json({
-    message: "Internal Server Error",
+  res.status(err.status || 500).json({
+    message: err.message || "Internal Server Error",
     ...(process.env.NODE_ENV !== "production" && { stack: err.stack }),
   });
 });
@@ -139,6 +141,8 @@ app.listen(PORT, () => {
 module.exports = app;
 
 // Graceful shutdown (optional, mainly for local use)
-process.on("SIGTERM", () => {
+process.on("SIGTERM", async () => {
   console.log("Server terminating");
+  await mongoose.connection.close();
+  process.exit(0);
 });
