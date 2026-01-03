@@ -105,6 +105,16 @@ const handleImageUpload = async (req, res, next) => {
 
           req.fileUrls = uploadedUrls;
         } else {
+          if (!isDesignerRoute && req.files) {
+            req.files.forEach((file) => {
+              console.log("UPLOAD DEBUG:", {
+                name: file.originalname,
+                mimetype: file.mimetype,
+                size: file.size,
+              });
+            });
+          }
+
           // Generic handling for others
           const uploadPromises = req.files.map(uploadToFirebase);
           const results = await Promise.allSettled(uploadPromises);
