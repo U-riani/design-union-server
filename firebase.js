@@ -18,13 +18,15 @@ if (
 
 const privateKey = FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n");
 
-admin.initializeApp({
-  credential: admin.credential.cert({
-    project_id: FIREBASE_PROJECT_ID,
-    client_email: FIREBASE_CLIENT_EMAIL,
-    private_key: privateKey,
-  }),
-  storageBucket: FIREBASE_STORAGE_BUCKET,
-});
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: FIREBASE_PROJECT_ID,
+      clientEmail: FIREBASE_CLIENT_EMAIL,
+      privateKey,
+    }),
+    storageBucket: FIREBASE_STORAGE_BUCKET,
+  });
+}
 
 module.exports = admin.storage().bucket();
