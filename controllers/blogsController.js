@@ -1,5 +1,6 @@
+// backend/controllers/blogsController.js
 const Blogs = require("../models/Blogs"); // Import Blogs model
-const { deleteFromFirebase } = require("../middleware/imageMiddleware"); // Import the delete function
+const { deleteFromHostGator } = require("../middleware/imageMiddleware"); // Import the delete function
 
 // Save blogs with multiple images
 const saveBlog = async (req, res) => {
@@ -22,7 +23,7 @@ const saveBlog = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error saving blog", error });
   }
-}; 
+};
 
 // Get all blogs
 const getAllBlogs = async (req, res) => {
@@ -38,7 +39,8 @@ const getAllBlogs = async (req, res) => {
 const getSingleBlogs = async (req, res) => {
   try {
     const singleBlogs = await Blogs.findById(req.params.id);
-    if (!singleBlogs) return res.status(404).json({ message: "Blogs not found" });
+    if (!singleBlogs)
+      return res.status(404).json({ message: "Blogs not found" });
     res.status(200).json(singleBlogs);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch blogs", error });
@@ -65,13 +67,11 @@ const updateSingleBlogs = async (req, res) => {
     if (!singleBlogsInfo)
       return res.status(404).json({ message: "Blogs not found" });
 
-
-
     // Update images if new ones are uploaded
     if (req.fileUrls && req.fileUrls.length > 0) {
       // delete all old images
       for (const imageUrl of singleBlogsInfo.images) {
-        await deleteFromFirebase(imageUrl);
+        await deleteFromHostGatorse(imageUrl);
       }
       updatedData.images = req.fileUrls;
     }
@@ -95,11 +95,12 @@ const updateSingleBlogs = async (req, res) => {
 const deleteBlogs = async (req, res) => {
   try {
     const singleBlogs = await Blogs.findById(req.params.id);
-    if (!singleBlogs) return res.status(404).json({ message: "Blogs not found" });
+    if (!singleBlogs)
+      return res.status(404).json({ message: "Blogs not found" });
 
     // Delete images from Firebase
     for (const imageUrl of singleBlogs.images) {
-      await deleteFromFirebase(imageUrl);
+      await deleteFromHostGatorse(imageUrl);
     }
 
     // Delete the news article

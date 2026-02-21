@@ -1,7 +1,8 @@
+// backend/controllers/projectContentController.js
 const Projects = require("../models/Projects");
 const ProjectContent = require("../models/ProjectContent");
 const ProjectContentImage = require("../models/ProjectContentImages");
-const { deleteFromFirebase } = require("../middleware/imageMiddleware"); // Import the delete function
+const { deleteFromHostGator } = require("../middleware/imageMiddleware"); // Import the delete function
 const thumbnailUrl = require("../middleware/thumbnailMiddleware"); // Import the delete function
 
 const getSingleProjectContent = async (req, res) => {
@@ -159,7 +160,7 @@ const updateProjectContentVideo = async (req, res) => {
   const { id } = req.params;
   const { videoId } = req.body;
   const { index } = req.body;
-  console.log(videoId)
+  console.log(videoId);
 
   try {
     const project = await Projects.findById(id);
@@ -260,24 +261,24 @@ const updateProjectContentImage = async (req, res) => {
         projectContent.media.images.push({ url: req.fileUrls[0] });
       }
       if (type === "update") {
-        await deleteFromFirebase(projectContent.media.images[localIndex].url);
+        await deleteFromHostGatorse(
+          projectContent.media.images[localIndex].url,
+        );
         projectContent.media.images[localIndex].url = req.fileUrls[0];
       }
     }
 
     await projectContent.save();
 
-    return res
-      .status(200)
-      .json({
-        message: "Image(s) updated",
-        id,
-        index,
-        projectContent,
-        localIndex,
-        imageFile: projectContent.media.images[localIndex],
-        middleWare: req.fileUrls[0],
-      });
+    return res.status(200).json({
+      message: "Image(s) updated",
+      id,
+      index,
+      projectContent,
+      localIndex,
+      imageFile: projectContent.media.images[localIndex],
+      middleWare: req.fileUrls[0],
+    });
   } catch (error) {
     return res
       .status(500)
@@ -288,7 +289,6 @@ const updateProjectContentImage = async (req, res) => {
 const deleteProjectContentImage = async (req, res) => {
   const { id } = req.params;
   const { index, localIndex } = req.query; // const { localIndex } = req.body;
-
 
   try {
     const project = await Projects.findById(id);
@@ -302,7 +302,12 @@ const deleteProjectContentImage = async (req, res) => {
         .status(404)
         .json({ message: "No such content at specified index" });
     }
-    console.log("--projectContentId-- ", projectContentId, '++localIndex++ ', localIndex);
+    console.log(
+      "--projectContentId-- ",
+      projectContentId,
+      "++localIndex++ ",
+      localIndex,
+    );
 
     // // Find and update the specific ProjectContent document
     const projectContent = await ProjectContent.findById(projectContentId);
@@ -312,7 +317,7 @@ const deleteProjectContentImage = async (req, res) => {
 
     const image = projectContent.media.images[localIndex];
     // //Delete image rom firebase
-    await deleteFromFirebase(image.url);
+    await deleteFromHostGatorse(image.url);
     // remove array
     projectContent.media.images.splice(localIndex, 1);
     // await ProjectContent.images[localIndex].pull({_id: ProjectContent.images[localIndex]._id})
@@ -343,7 +348,7 @@ const deleteProjectContentImage = async (req, res) => {
 
 const deleteProjectContent = async (req, res) => {
   const { id } = req.params;
-  const {index} = req.query;
+  const { index } = req.query;
   try {
     const project = await Projects.findById(id);
     if (!project) {
@@ -364,9 +369,13 @@ const deleteProjectContent = async (req, res) => {
       return res.status(404).json({ message: "No such project content" });
     }
 
-    if(projectContent.media && projectContent.media.images && projectContent.media.images.length > 0)  {
-      for(const image of projectContent.media.images) {
-       await deleteFromFirebase(image.url)
+    if (
+      projectContent.media &&
+      projectContent.media.images &&
+      projectContent.media.images.length > 0
+    ) {
+      for (const image of projectContent.media.images) {
+        await deleteFromHostGatorse(image.url);
       }
     }
 
@@ -374,11 +383,11 @@ const deleteProjectContent = async (req, res) => {
 
     project.projectContent.splice(index, 1);
 
-    await project.save()
+    await project.save();
 
-
-
-    return res.status(200).json({ message: "deleteProjectContent", projectContent });
+    return res
+      .status(200)
+      .json({ message: "deleteProjectContent", projectContent });
   } catch (error) {
     return res
       .status(500)

@@ -1,3 +1,4 @@
+// backend/routes/projectsDescriptionRoutes.js
 const express = require("express");
 const {deleteProjectDescription, updateProjectDescription, updateProjectHeroData, createProjectsHeroData, deleteProjectsHerodata} = require('../controllers/projectsDescriptionController')
 const { handleProjectsHeroImagesUpload } = require("../middleware/projectsImageMiddleware");

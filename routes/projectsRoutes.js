@@ -6,14 +6,14 @@ const {
   createProject,
   deleteProject,
   updateProject,
-  getAllprojectsImageTitleText
+  getAllprojectsImageTitleText,
 } = require("../controllers/projectsController");
 // const { handleProjectsHeroImagesUpload } = require("../middleware/projectsImageMiddleware");
-const { handleImageUpload } = require('../middleware/imageMiddleware');
+const { handleImageUpload } = require("../middleware/imageMiddleware");
 // const {
 //   handleHeroImageUpload,
 //   handleImageUpdate,
-//   deleteFromFirebase,
+//   deleteFromHostGatorse,
 // } = require("../middleware/projectsImageMiddleware");
 
 const dbMiddleware = require("../middleware/dbMiddleware");

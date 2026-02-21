@@ -1,3 +1,4 @@
+// backend/controllers/visitController.js
 const Visit = require("../models/Visit"); // Adjust the path to your Visit model
 
 // Create a new visit

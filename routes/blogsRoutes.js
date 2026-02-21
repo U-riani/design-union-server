@@ -1,4 +1,4 @@
-
+// backend/routes/blogsRoutes.js
 const express = require('express');
 const { 
   saveBlog, 

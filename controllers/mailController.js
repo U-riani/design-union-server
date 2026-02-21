@@ -1,3 +1,4 @@
+// backend/controllers/mailController.js
 const nodemailer = require("nodemailer");
 
 const { MAIL_SERVICE, MAIL_USER, MAIL_PASS, MAIL_FROM } = process.env;

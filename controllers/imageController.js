@@ -1,3 +1,4 @@
+// backend/controllers/imageController.js
 const Image = require('../models/imageModel'); // Import Image model (optional)
 
 // Handle image upload

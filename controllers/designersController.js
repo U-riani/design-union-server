@@ -1,5 +1,6 @@
+// backend/controllers/designersController.js
 const Designers = require("../models/Designers");
-const { deleteFromFirebase } = require("../middleware/imageMiddleware"); // Import the delete function
+const { deleteFromHostGator } = require("../middleware/imageMiddleware"); // Import the delete function
 const { sendMail } = require("./mailController");
 const mongoose = require("mongoose");
 const fs = require("fs");
@@ -27,9 +28,9 @@ const getAllDesignersInfo = async (req, res) => {
     const formattedDesigners = designers.map((designer) => ({
       name: designer.name?.ge || "Unnamed",
       phone: designer.phone || "No phone",
-      email: designer.email || null,           // example extra field
+      email: designer.email || null, // example extra field
       companyPerson: designer.companyPerson || null, // optional field
-      _id: designer._id
+      _id: designer._id,
     }));
 
     return res.status(200).json(formattedDesigners);
@@ -40,7 +41,6 @@ const getAllDesignersInfo = async (req, res) => {
       .json({ error, customError: "Error in getAllDesignersFile" });
   }
 };
-
 
 // Get all Designers
 const getAllDesignersJsonFile = async (req, res) => {
@@ -77,12 +77,10 @@ const getAllDesignersJsonFile = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in getAllDesigners backup:", error);
-    return res
-      .status(500)
-      .json({
-        error,
-        customError: "Error saving all designer data for backup",
-      });
+    return res.status(500).json({
+      error,
+      customError: "Error saving all designer data for backup",
+    });
   }
 };
 
@@ -112,7 +110,7 @@ const migrateDesignerImages = async () => {
         console.log(`✔ Updated ${designer.name?.ge || designer._id}`);
       } else {
         console.log(
-          `⚠ Skipped (already updated): ${designer.name?.ge || designer._id}`
+          `⚠ Skipped (already updated): ${designer.name?.ge || designer._id}`,
         );
       }
     }
@@ -223,9 +221,21 @@ const createDesigner = async (req, res) => {
     // Send notification emails
     const message = `${designerData.name.ge} wants to register`;
     await Promise.all([
-      sendMail("designersunion.geo@gmail.com", "designersunion designer registration", message),
-      sendMail("maisuradzemariami09.07@gmail.com", "designersunion designer registration", message),
-      sendMail("q.urotadze@yahoo.com", "designersunion designer registration", message),
+      sendMail(
+        "designersunion.geo@gmail.com",
+        "designersunion designer registration",
+        message,
+      ),
+      sendMail(
+        "maisuradzemariami09.07@gmail.com",
+        "designersunion designer registration",
+        message,
+      ),
+      sendMail(
+        "q.urotadze@yahoo.com",
+        "designersunion designer registration",
+        message,
+      ),
     ]);
 
     return res.status(200).json(newDesigner);
@@ -297,7 +307,7 @@ const deleteDesigner = async (req, res) => {
     // Delete associated image(s) from Firebase
     if (singleDesigner.images && singleDesigner.images.length > 0) {
       singleDesigner.images.forEach(async (item, i) => {
-        await deleteFromFirebase(item);
+        await deleteFromHostGatorse(item);
       });
     }
 
@@ -341,7 +351,7 @@ const deleteDesigner = async (req, res) => {
 //     if (req.fileUrls?.profileImage) {
 //       // Delete old profile image
 //       const oldProfile = singleDesignerInfo.images?.[0];
-//       if (oldProfile) await deleteFromFirebase(oldProfile);
+//       if (oldProfile) await deleteFromHostGatorse(oldProfile);
 //       updatedData.images = updatedData.images || [];
 //       updatedData.images[0] = req.fileUrls.profileImage;
 //     }
@@ -349,7 +359,7 @@ const deleteDesigner = async (req, res) => {
 //     // Handle new projectImage
 //     if (req.fileUrls?.projectImage) {
 //       const oldProject = singleDesignerInfo.images?.[1];
-//       if (oldProject) await deleteFromFirebase(oldProject);
+//       if (oldProject) await deleteFromHostGatorse(oldProject);
 //       updatedData.images = updatedData.images || [];
 //       updatedData.images[1] = req.fileUrls.projectImage;
 //     }
@@ -394,13 +404,13 @@ const updateDesigner = async (req, res) => {
 
     if (req.fileUrls?.profileImage) {
       const oldProfile = singleDesignerInfo.profilePhoto?.[0];
-      if (oldProfile) await deleteFromFirebase(oldProfile);
+      if (oldProfile) await deleteFromHostGatorse(oldProfile);
       updatedData.profilePhoto = [req.fileUrls.profileImage];
     }
 
     if (req.fileUrls?.projectImage) {
       const oldProject = singleDesignerInfo.projectPhoto?.[0];
-      if (oldProject) await deleteFromFirebase(oldProject);
+      if (oldProject) await deleteFromHostGatorse(oldProject);
       updatedData.projectPhoto = [req.fileUrls.projectImage];
     }
 
@@ -427,5 +437,5 @@ module.exports = {
   updateDesigner,
   getAllDesignersJsonFile,
   migrateDesignerImages,
-  getAllDesignersInfo
+  getAllDesignersInfo,
 };

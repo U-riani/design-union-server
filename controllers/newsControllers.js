@@ -1,5 +1,6 @@
+// backend/controllers/newsControllers.js
 const News = require("../models/News"); // Import News model
-const { deleteFromFirebase } = require("../middleware/imageMiddleware"); // Import the delete function
+const { deleteFromHostGator } = require("../middleware/imageMiddleware"); // Import the delete function
 
 // Save news with multiple images
 const saveNews = async (req, res) => {
@@ -69,7 +70,7 @@ const updateSingleNews = async (req, res) => {
     if (req.fileUrls && req.fileUrls.length > 0) {
       // delete all old images
       for (const imageUrl of singleNewsInfo.images) {
-        await deleteFromFirebase(imageUrl);
+        await deleteFromHostGatorse(imageUrl);
       }
       updatedData.images = req.fileUrls;
     }
@@ -97,7 +98,7 @@ const deleteNews = async (req, res) => {
 
     // Delete images from Firebase
     for (const imageUrl of singleNews.images) {
-      await deleteFromFirebase(imageUrl);
+      await deleteFromHostGatorse(imageUrl);
     }
 
     // Delete the news article

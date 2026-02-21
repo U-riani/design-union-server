@@ -1,6 +1,7 @@
+// backend/controllers/aboutUsController.js
 const AboutUs = require("../models/AboutUs");
 const AboutUsMainPage = require("../models/AboutUsMainPage");
-const { deleteFromFirebase } = require("../middleware/imageMiddleware"); // Import the delete function
+const { deleteFromHostGator } = require("../middleware/imageMiddleware"); // Import the delete function
 
 // Get  AboutUs
 const getAboutUs = async (req, res) => {
@@ -57,7 +58,7 @@ const updateAboutUs = async (req, res) => {
       console.log("--++++--");
       // Delete old image(s)
       if (aboutUsData.image && aboutUsData.image.length > 0) {
-        await deleteFromFirebase(aboutUsData.image[0]);
+        await deleteFromHostGatorse(aboutUsData.image[0]);
       }
 
       // Set new images
@@ -128,7 +129,7 @@ const updateAboutUsMainPage = async (req, res) => {
       console.log("--++++--");
       // Delete old image(s)
       if (aboutUsData.image && aboutUsData.image.length > 0) {
-        await deleteFromFirebase(aboutUsData.image[0]);
+        await deleteFromHostGatorse(aboutUsData.image[0]);
       }
 
       // Set new images
@@ -141,7 +142,7 @@ const updateAboutUsMainPage = async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     return res.status(200).json(updatedAboutUs);

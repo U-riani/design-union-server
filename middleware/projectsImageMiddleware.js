@@ -1,3 +1,4 @@
+// backend/middleware/projectsImageMiddleware.js
 const multer = require("multer");
 const path = require("path");
 const bucket = require("../firebase"); // Import the bucket from firebase.js

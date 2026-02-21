@@ -1,9 +1,10 @@
+// backend/controllers/projectsController.js
 const Projects = require("../models/Projects");
 const HeroImage = require("../models/HeroImage");
 const HeroData = require("../models/HeroData");
 const ProjectContent = require("../models/ProjectContent");
 
-const { deleteFromFirebase } = require("../middleware/imageMiddleware"); // Import the delete function
+const { deleteFromHostGator } = require("../middleware/imageMiddleware"); // Import the delete function
 
 // Get all heroes
 const getAllProjects = async (req, res) => {
@@ -27,7 +28,7 @@ const getLastThreeProjects = async (req, res) => {
       .sort({ date: -1 })
       .limit(3)
       .select("name _id")
-      .populate([{ path: "heroData", select: 'image.url' }])
+      .populate([{ path: "heroData", select: "image.url" }]);
 
     // Map the projects to return the desired structure
     const formattedProjects = projects.map((project) => ({
@@ -39,7 +40,9 @@ const getLastThreeProjects = async (req, res) => {
     return res.status(200).json(formattedProjects);
   } catch (error) {
     console.error("Error in getA Last 3 projects:", error);
-    return res.status(500).json({ error, customError: "Error in get last 3 projects" });
+    return res
+      .status(500)
+      .json({ error, customError: "Error in get last 3 projects" });
   }
 };
 
@@ -51,7 +54,7 @@ const getAllprojectsImageTitleText = async (req, res) => {
       const nameImageTextId = {};
       nameImageTextId.id = proj._id;
       nameImageTextId.name = proj.name;
-      nameImageTextId.text = proj.heroData[0]?.heroText || {ge: '', en: ''};
+      nameImageTextId.text = proj.heroData[0]?.heroText || { ge: "", en: "" };
       nameImageTextId.image = proj.heroData[0]?.image || "";
       projectsArr.push(nameImageTextId);
     }
@@ -341,7 +344,7 @@ const createProject = async (req, res) => {
 //       const heroData = await HeroData.findByIdAndDelete(heroDataId);
 //       // // Delete associated image(s) from Firebase
 //       if (heroData && heroData.image && heroData.image.url) {
-//         await deleteFromFirebase(heroData.image.url);
+//         await deleteFromHostGatorse(heroData.image.url);
 //       }
 //     }
 
@@ -358,7 +361,7 @@ const createProject = async (req, res) => {
 //         projectContentDoc.media.images.length > 0
 //       ) {
 //         for (const image of projectContentDoc.media.images) {
-//           await deleteFromFirebase(image.url);
+//           await deleteFromHostGatorse(image.url);
 //         }
 //       }
 //       await ProjectContent.findByIdAndDelete(projectContentId);
@@ -394,7 +397,7 @@ const deleteProject = async (req, res) => {
       for (const heroDataId of singleProject.heroData) {
         const heroData = await HeroData.findByIdAndDelete(heroDataId);
         if (heroData && heroData.image && heroData.image.url) {
-          await deleteFromFirebase(heroData.image.url);
+          await deleteFromHostGatorse(heroData.image.url);
         }
       }
     }
@@ -406,9 +409,8 @@ const deleteProject = async (req, res) => {
 
       // Delete associated ProjectContent and images from Firebase
       for (const projectContentId of projectContentsId) {
-        const projectContentDoc = await ProjectContent.findById(
-          projectContentId
-        );
+        const projectContentDoc =
+          await ProjectContent.findById(projectContentId);
         if (projectContentDoc) {
           // Delete images from Firebase if they exist
           if (
@@ -417,7 +419,7 @@ const deleteProject = async (req, res) => {
             projectContentDoc.media.images.length > 0
           ) {
             for (const image of projectContentDoc.media.images) {
-              await deleteFromFirebase(image.url);
+              await deleteFromHostGatorse(image.url);
             }
           }
 
@@ -462,7 +464,7 @@ const updateProject = async (req, res) => {
     // if (req.fileUrls && req.fileUrls.length > 0) {
     //   // Delete old image(s)
     //   if (singleProjectInfo.image && singleProjectInfo.image.length > 0) {
-    //     await deleteFromFirebase(singleProjectInfo.image[0]);
+    //     await deleteFromHostGatorse(singleProjectInfo.image[0]);
     //   }
 
     //   // Set new images

@@ -1,3 +1,4 @@
+// backend/routes/heroRoutes.js
 const express = require('express');
 const { getAllHeros, getSingleHero, createHero, deleteHero, updateHero } = require('../controllers/heroController');
 const { handleImageUpload } = require('../middleware/imageMiddleware');

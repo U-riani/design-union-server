@@ -1,3 +1,4 @@
+// backend/middleware/blogsMiddleware.js
 const validateBlogsData = (req, res, next) => {
     const { title, text } = req.body;
     // const {image} = req.file

@@ -1,3 +1,4 @@
+// backend/routes/partnersRoutes.js
 const express = require('express');
 const { getAllPartners, getSinglePartner, createPartner, deletePartner, updatePartner } = require('../controllers/partnersController');
 const { handleImageUpload } = require('../middleware/imageMiddleware');

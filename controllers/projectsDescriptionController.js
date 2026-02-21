@@ -1,38 +1,8 @@
+//backend/controllers/projectsDescriptionController.js
 const Projects = require("../models/Projects");
 const HeroData = require("../models/HeroData");
 
-const { deleteFromFirebase } = require("../middleware/imageMiddleware"); // Import the delete function
-
-// // Get all heroes
-// const getAllProjects = async (req, res) => {
-//   try {
-//     const projects = await Projects.find().populate({
-//       path: "heroData",
-//     });
-//     // const allProjects =
-//     return res.status(200).json(projects);
-//   } catch (error) {
-//     console.error("Error in getAllProjects:", error);
-//     return res.status(500).json({ error, customError: "Error in getAll hero" });
-//   }
-// };
-
-// // Get a single hero
-// const getSingleProject = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const singleProject = await Projects.findById(id).populate({path: "heroData"});
-//     if (!singleProject) {
-//       return res.status(404).json({ message: "Project not found" });
-//     }
-//     return res.status(200).json(singleProject);
-//   } catch (error) {
-//     console.error("Error in getSingleProject:", error);
-//     return res
-//       .status(500)
-//       .json({ error, customError: "Error in get single hero" });
-//   }
-// };
+const { deleteFromHostGator } = require("../middleware/imageMiddleware"); // Import the delete function
 
 // Delete a hero
 const deleteProjectDescription = async (req, res) => {
@@ -46,7 +16,7 @@ const deleteProjectDescription = async (req, res) => {
 
     // Delete associated image(s) from Firebase
     if (singleProject.image && singleProject.image.length > 0) {
-      await deleteFromFirebase(singleProject.image[0]);
+      await deleteFromHostGatorse(singleProject.image[0]);
     }
 
     await Projects.findByIdAndDelete(id);
@@ -95,120 +65,7 @@ const updateProjectDescription = async (req, res) => {
       .json({ message: "Failed to update project description", error });
   }
 };
-// Update a Project
-// const updateProjectHeroData = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const index = req.body.index;
 
-//     // const updatedData = {
-//     //   heroText: {
-//     //     en: req.body.heroText.en,
-//     //     ge: req.body.heroText.ge,
-//     //   },
-//     //   image: req.fileUrls,
-//     // };
-
-//     // Find existing project document
-//     // const singleProjectInfo = await Projects.findById(id);
-//     // if (!singleProjectInfo) {
-//     //   return res
-//     //     .status(404)
-//     //     .json({ message: "Project description not found in projectsHeroData controller" });
-//     // }
-
-//     // const heroDataId = await HeroData.findById({ id: singleProjectInfo.heroData[index] });
-
-//     // if (!heroDataId) {
-//     //   return res
-//     //     .status(404)
-//     //     .json({ message: "heroDataId in projectsDescription not found to update heroData" });
-//     // }
-//     // const updatedProjectsHeroData = await Projects.findByIdAndUpdate(heroDataId, updatedData, {
-//     //   new: true,
-//     //   runValidators: true,
-//     // });
-
-//     const myData = await req.body.projectId;
-
-//     res
-//       .status(200)
-//       .json({ index: index || `${id} -- id`, myData: myData || "ddd" });
-//   } catch (error) {
-//     console.error("Failed to update projects HeroData:", error);
-//     res
-//       .status(500)
-//       .json({ message: "Failed to update projectHero data", error });
-//   }
-// };
-// const updateProjectHeroData = async (req, res) => {
-//   try {
-//     const { id } = req.params; // ID of the project
-//     const index = req.body.index; // Index of the heroData to update
-//     const oldUrl = await req.body.url;
-//     // const imageInfo = req.body.myImage.fileName || 'nope'
-//     // const uploadedImageDetails = req.uploadedImageDetails || [];
-
-//     const updatedHeroData = {
-//       heroText: {
-//         en: req.body.heroText.en,
-//         ge: req.body.heroText.ge,
-//       },
-//       image: {
-//         url: req.body.url,
-//       },
-//     };
-
-//     // Find the project document by ID
-//     const project = await Projects.findById(id);
-//     if (!project) {
-//       return res.status(404).json({ message: "Project not found" });
-//     }
-
-//     // Ensure the index is within bounds
-//     if (index < 0 || index >= project.heroData.length) {
-//       return res.status(400).json({ message: "Invalid heroData index" });
-//     }
-
-//     // Get the specific heroData ID at the specified index
-//     const heroDataId = project.heroData[index];
-
-//     if (!heroDataId) {
-//       return res.status(404).json({ message: "HeroDataId  not found" });
-//     }
-//     if (req.fileUrls && req.fileUrls.length > 0) {
-//       // delete old image
-//       await deleteFromFirebase(updatedHeroData.image.url);
-
-//       console.log("---- req file urls");
-
-//       // Set new images
-//       updatedHeroData.image.url = req.fileUrls[0];
-//     }
-
-//     // Update the HeroData document
-//     const updatedHeroDataDocument = await HeroData.findByIdAndUpdate(
-//       heroDataId,
-//       updatedHeroData,
-//       { new: true, runValidators: true }
-//     );
-
-//     if (!updatedHeroDataDocument) {
-//       return res.status(404).json({ message: "HeroData item not found" });
-//     }
-
-//     res.status(200).json({
-//       message: "HeroData updated successfully",
-//       updatedHeroData: updatedHeroDataDocument,
-//       heroDataId,
-//       index,
-//       url: oldUrl,
-//     });
-//   } catch (error) {
-//     console.error("Failed to update project's HeroData:", error);
-//     res.status(500).json({ message: "Failed to update HeroData", error });
-//   }
-// };
 const updateProjectHeroData = async (req, res) => {
   try {
     const { id } = req.params; // Project ID
@@ -246,7 +103,7 @@ const updateProjectHeroData = async (req, res) => {
     const oldHeroData = await HeroData.findById(heroDataId);
     // If new image URLs are present, delete the old image using the old URL
     if (req.fileUrls && req.fileUrls.length > 0) {
-      await deleteFromFirebase(oldHeroData.image.url); // Delete the old image
+      await deleteFromHostGatorse(oldHeroData.image.url); // Delete the old image
       updatedHeroData.image.url = req.fileUrls[0]; // Set the new image URL
     }
 
@@ -254,7 +111,7 @@ const updateProjectHeroData = async (req, res) => {
     const updatedHeroDataDocument = await HeroData.findByIdAndUpdate(
       heroDataId,
       updatedHeroData,
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedHeroDataDocument) {
@@ -295,7 +152,7 @@ const createProjectsHeroData = async (req, res) => {
     await Projects.findByIdAndUpdate(
       id,
       { $push: { heroData: heroData._id } },
-      { new: true } // Returns the updated document
+      { new: true }, // Returns the updated document
     );
 
     res.status(200).json({
@@ -322,27 +179,30 @@ const deleteProjectsHerodata = async (req, res) => {
       return res.status(404).json({ message: "HeroDataId not found" });
     }
 
-    console.log(heroDataId)
+    console.log(heroDataId);
 
     // // Delete associated image(s) from Firebase
     const heroData = await HeroData.findById(heroDataId);
     if (heroData && heroData.image && heroData.image.url) {
-      await deleteFromFirebase(heroData.image.url);
-    }else {
-      res.json({error: 'error in deleting images'})
+      await deleteFromHostGatorse(heroData.image.url);
+    } else {
+      res.json({ error: "error in deleting images" });
     }
 
     //Delete the HeroData document
     await HeroData.findByIdAndDelete(heroDataId);
 
-
     // // Remove the reference from the project's heroData array
     singleProject.heroData.splice(index, 1);
     await singleProject.save();
 
-
     // await HeroData.findByIdAndDelete(heroDataId);
-    res.status(200).json({ message: "ProjectHeroData deleted successfully" , index, id, heroDataId});
+    res.status(200).json({
+      message: "ProjectHeroData deleted successfully",
+      index,
+      id,
+      heroDataId,
+    });
   } catch (error) {
     res
       .status(500)
@@ -355,5 +215,5 @@ module.exports = {
   updateProjectDescription,
   updateProjectHeroData,
   createProjectsHeroData,
-  deleteProjectsHerodata
+  deleteProjectsHerodata,
 };

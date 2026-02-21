@@ -1,6 +1,6 @@
-// controllers/teamController.js
+// backend/controllers/teamController.js
 const TeamMember = require("../models/TeamMember");
-const { deleteFromFirebase } = require("../middleware/imageMiddleware");
+const { deleteFromHostGator } = require("../middleware/imageMiddleware");
 
 /**
  * GET /api/team
@@ -109,7 +109,7 @@ exports.updateTeamMember = async (req, res) => {
 
     // Replace image if new one uploaded
     if (req.fileUrls && req.fileUrls.length > 0) {
-      await deleteFromFirebase(member.image);
+      await deleteFromHostGator (member.image);
       member.image = req.fileUrls[0];
     }
 
@@ -173,7 +173,7 @@ exports.deleteTeamMember = async (req, res) => {
       return res.status(404).json({ message: "Team member not found" });
     }
 
-    await deleteFromFirebase(member.image);
+    await deleteFromHostGator (member.image);
     await member.deleteOne();
 
     res.json({ message: "Team member deleted" });

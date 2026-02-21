@@ -1,5 +1,6 @@
+// backend/controllers/partnersController.js
 const Partners = require("../models/Partners");
-const { deleteFromFirebase } = require("../middleware/imageMiddleware"); // Import the delete function
+const { deleteFromHostGator } = require("../middleware/imageMiddleware"); // Import the delete function
 
 // Get all Partners
 const getAllPartners = async (req, res) => {
@@ -8,7 +9,9 @@ const getAllPartners = async (req, res) => {
     return res.status(200).json(partners);
   } catch (error) {
     console.error("Error in getAllPartners:", error);
-    return res.status(500).json({ error, customError: "Error in getAll Partners" });
+    return res
+      .status(500)
+      .json({ error, customError: "Error in getAll Partners" });
   }
 };
 
@@ -23,7 +26,9 @@ const getSinglePartner = async (req, res) => {
     return res.status(200).json(singlePartner);
   } catch (error) {
     console.error("Error in getSinglePartner:", error);
-    return res.status(500).json({ error, customError: "Error in get single partner" });
+    return res
+      .status(500)
+      .json({ error, customError: "Error in get single partner" });
   }
 };
 
@@ -43,10 +48,9 @@ const createPartner = async (req, res) => {
       image: req.fileUrls || [], // Use `fileUrls` from middleware
     };
 
-
     const newPartners = new Partners(partnerData);
     await newPartners.save();
-    
+
     return res.status(200).json(newPartners);
   } catch (error) {
     console.error("Error in create Partner:", error);
@@ -58,15 +62,15 @@ const createPartner = async (req, res) => {
 const deletePartner = async (req, res) => {
   try {
     const { id } = req.params;
-  
+
     const singlePartner = await Partners.findById(id);
     if (!singlePartner) {
       return res.status(404).json({ message: "No such partner to delete" });
     }
 
     // Delete associated image(s) from Firebase
-    if (singlePartner.image  && singlePartner.image.length > 0) {
-      await deleteFromFirebase(singlePartner.image[0]);
+    if (singlePartner.image && singlePartner.image.length > 0) {
+      await deleteFromHostGatorse(singlePartner.image[0]);
     }
 
     await Partners.findByIdAndDelete(id);
@@ -93,7 +97,6 @@ const updatePartner = async (req, res) => {
       websiteUrl: req.body.websiteUrl,
     };
 
-
     // Find existing partner document
     const singlePartnerInfo = await Partners.findById(id);
     if (!singlePartnerInfo) {
@@ -104,12 +107,12 @@ const updatePartner = async (req, res) => {
     if (req.fileUrls && req.fileUrls.length > 0) {
       // Delete old image(s)
       if (singlePartnerInfo.image && singlePartnerInfo.image.length > 0) {
-        await deleteFromFirebase(singlePartnerInfo.image[0]);
+        await deleteFromHostGatorse(singlePartnerInfo.image[0]);
       }
 
       // Set new images
       updatedData.image = req.fileUrls;
-    } 
+    }
 
     const updatedPartner = await Partners.findByIdAndUpdate(id, updatedData, {
       new: true,

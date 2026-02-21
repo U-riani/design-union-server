@@ -1,3 +1,4 @@
+// backend/routes/imageRouter.js
 const express = require("express");
 const dbMiddleware = require("../middleware/dbMiddleware");
 

@@ -1,3 +1,4 @@
+// backend/routes/designersRoutes.js
 const express = require('express');
 const { getAllDesigners, getSingleDesigner, createDesigner, deleteDesigner, updateDesigner, getSomeDesigners, getAllDesignersInfo } = require('../controllers/designersController');
 const { handleImageUpload } = require('../middleware/imageMiddleware');

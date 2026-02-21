@@ -1,3 +1,4 @@
+// backend/routes/adminRoutes.js
 const express = require('express');
 const { loginAdmin, getAdminDashboard } = require('../controllers/adminController');
 const { authenticateToken } = require('../middleware/authMiddleware');

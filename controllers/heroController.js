@@ -1,5 +1,6 @@
+// backend/controllers/heroController.js
 const Hero = require("../models/Hero");
-const { deleteFromFirebase } = require("../middleware/imageMiddleware"); // Import the delete function
+const { deleteFromHostGator } = require("../middleware/imageMiddleware"); // Import the delete function
 
 // Get all heroes
 const getAllHeros = async (req, res) => {
@@ -23,7 +24,9 @@ const getSingleHero = async (req, res) => {
     return res.status(200).json(singleHero);
   } catch (error) {
     console.error("Error in getSingleHero:", error);
-    return res.status(500).json({ error, customError: "Error in get single hero" });
+    return res
+      .status(500)
+      .json({ error, customError: "Error in get single hero" });
   }
 };
 
@@ -51,15 +54,15 @@ const createHero = async (req, res) => {
 const deleteHero = async (req, res) => {
   try {
     const { id } = req.params;
-  
+
     const singleHero = await Hero.findById(id);
     if (!singleHero) {
       return res.status(404).json({ message: "No such hero to delete" });
     }
 
     // Delete associated image(s) from Firebase
-    if (singleHero.image  && singleHero.image.length > 0) {
-      await deleteFromFirebase(singleHero.image[0]);
+    if (singleHero.image && singleHero.image.length > 0) {
+      await deleteFromHostGatorse(singleHero.image[0]);
     }
 
     await Hero.findByIdAndDelete(id);
@@ -91,7 +94,7 @@ const updateHero = async (req, res) => {
     if (req.fileUrls && req.fileUrls.length > 0) {
       // Delete old image(s)
       if (singleHeroInfo.image && singleHeroInfo.image.length > 0) {
-        await deleteFromFirebase(singleHeroInfo.image[0]);
+        await deleteFromHostGatorse(singleHeroInfo.image[0]);
       }
 
       // Set new images
