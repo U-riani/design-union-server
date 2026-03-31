@@ -9,11 +9,16 @@ if (!MAIL_USER || !MAIL_PASS) {
 
 // Step 1: Create a transporter
 const transporter = nodemailer.createTransport({
-  service: MAIL_SERVICE || "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: MAIL_USER,
     pass: MAIL_PASS,
   },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
 });
 
 // Step 2: Define the sendMail function
