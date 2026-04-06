@@ -231,11 +231,11 @@ const createDesigner = async (req, res) => {
         "designersunion designer registration",
         message,
       ),
-      sendMail(
-        "q.urotadze@yahoo.com",
-        "designersunion designer registration",
-        message,
-      ),
+      // sendMail(
+      //   "q.urotadze@yahoo.com",
+      //   "designersunion designer registration",
+      //   message,
+      // ),
     ]);
 
     return res.status(200).json(newDesigner);
